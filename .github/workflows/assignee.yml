@@ -1,0 +1,25 @@
+name: assignee
+
+on:
+  pull_request:  
+    types: [ opened, unassigned ]
+
+jobs:
+  # @see https://buildersbox.corp-sansan.com/entry/2021/12/15/110000
+  # @see https://zenn.dev/snowcait/articles/d6bc5eafd8ab75
+  assignSelf:
+    name: Assign Self
+    # dependabotのPRは無視する
+    if: ${{ github.actor != 'dependabot[bot]' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 1
+    steps:
+      - run: cat $GITHUB_EVENT_PATH
+      - run: gh pr edit $NUMBER --add-assignee $ASSIGNEE
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          NUMBER: ${{ github.event.pull_request.number }}
+          ASSIGNEE: ${{ github.event.pull_request.user.login }}
+        # 空かどうかを判定する
+        if: ${{ toJSON(github.event.pull_request.assignees) == '[]' }}
