@@ -1,0 +1,22 @@
+name: pr-main
+
+on:
+  pull_request:
+    branches:
+      - main
+jobs:
+  check:
+    name: check branch
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      # developを経由していないときに怒る
+      - uses: SonicGarden/check-merged-action@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          originBranch: develop
+        if: ${{!contains(github.head_ref, 'hotfix')}}
+
+  
