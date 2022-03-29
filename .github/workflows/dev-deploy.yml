@@ -10,6 +10,10 @@ jobs:
     steps:
       - name: Checkout Repo
         uses: actions/checkout@master
+      - name: Use Node 10.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: '10.x'
       - name: Install Dependencies
         run: npm ci
       - name: Deploy to Firebase
@@ -18,3 +22,4 @@ jobs:
           args: deploy --only functions
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+          RESOURCE_DIR: src
